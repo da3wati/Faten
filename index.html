@@ -61,14 +61,17 @@ img{
     width:100%;
     height:100%;
     object-fit:cover;
-    z-index:-5;
+    object-position:center center;
+    z-index:0;
     background:#100b0b;
+    pointer-events:none;
+    display:block;
 }
 
 .video-overlay{
     position:fixed;
     inset:0;
-    z-index:-4;
+    z-index:1;
 
     background:
         linear-gradient(
@@ -82,7 +85,7 @@ img{
 .video-glow{
     position:fixed;
     inset:0;
-    z-index:-3;
+    z-index:1;
     pointer-events:none;
 
     background:
@@ -263,6 +266,7 @@ img{
     display:none;
     position:relative;
     min-height:100vh;
+    z-index:2;
 }
 
 /* =========================================================
@@ -414,19 +418,22 @@ img{
 
 .names{
     font-family:"Amiri",serif;
-
-    font-size:
-        clamp(3.2rem,9vw,6rem);
-
+    font-size:clamp(3.2rem,9vw,6rem);
     line-height:1.2;
-
     color:#fff8ed;
-
     margin:20px 0;
-
     text-shadow:
         0 3px 20px rgba(0,0,0,.5),
         0 0 25px rgba(216,179,106,.15);
+}
+
+.names img{
+    display:block;
+    width:min(92%, 760px);
+    height:auto;
+    max-height:220px;
+    object-fit:contain;
+    margin:0 auto;
 }
 
 .names span{
@@ -1322,7 +1329,7 @@ footer strong{
     </p>
 
     <div class="names">
-        Faten
+        <img src="names.png" alt="Faten & Amar">
     </div>
 
     <p class="welcome">
@@ -1697,6 +1704,16 @@ function openInvitation(){
     /* تشغيل الموسيقى مباشرة لأن الضغط هو تفاعل المستخدم */
     music.play().catch(()=>{});
 
+    /* تشغيل فيديو الخلفية بعد ضغط المستخدم لضمان عمله على iPhone/Safari */
+    const backgroundVideo = document.getElementById("backgroundVideo");
+    if(backgroundVideo){
+        backgroundVideo.muted = true;
+        backgroundVideo.setAttribute("muted","");
+        backgroundVideo.setAttribute("playsinline","");
+        backgroundVideo.setAttribute("webkit-playsinline","");
+        backgroundVideo.play().catch(()=>{});
+    }
+
     /*
       تبقى الخلفية تعمل، بينما عناصر الدعوة تنتظر ثانية كاملة.
       بعدها تبدأ العناصر بالظهور تدريجيًا.
@@ -1709,7 +1726,7 @@ function openInvitation(){
 
         initReveal();
 
-    },1000);
+    },2000);
 
 }
 
